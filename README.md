@@ -29,6 +29,7 @@
 ## 使用方法
 
 -f 指定txt文件
+
 -z 指定zip文件
 
 1. 安装依赖
@@ -43,4 +44,20 @@ deactivate
 2. 参数设置
 -f 指定txt文件
 -z 指定zip文件
-4. 
+
+## 场景示例
+
+输出结果
+
+分别是：原数据，带有参数的源数据，提取的第一级目录，拼接后数据，带有参数的拼接后数据
+
+<img width="873" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/43ceaf0d-115f-4b2f-b3ee-2d87ad24543d">
+
+有效性验证
+
+通过遍历拼接访问到了未授权的下载接口
+
+<img width="1141" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/f432aa5f-4fb3-42d2-808d-4165e73edc8c">
+
+<img width="615" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/405e4f4c-36c0-4ccc-849e-2b3361b817c8">
+
