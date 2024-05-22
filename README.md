@@ -1,17 +1,27 @@
-# TryAnyPath
-一款用于穷举拼接url来达成未授权访问的小工具
+# FindAnyThing
+一款基于WIH(目前)的穷举拼接API并访问从而达成对未授权/敏感信息的获取并尽力获取准确baseurl的工具。
+
+我个人觉得信息收集是非常需要细心的，特别是在如今高强度的与设备对抗以及甲方日常化的演练中，自动化的逻辑就那么几个，想要在一轮轮演练之后依旧能取得成果是一件困难的事情，特别是我在最近的一次众测中发现了有一个未授权的路径只有经过拼接才能访问，我翻了翻urlfinder的文档还有我另一个常常使用的工具jjjjjjjjjjjjjs，经过对同一目标的测试都没有成功的复现这个漏洞，经过仔细的理解工具，我发现urlfinder的fuzz功能基于对所有筛选出的根目录的200响应进行拼接，jjjjjjjjjjjjjs则没有这个功能，只能对200的根目录进行swagger等的爆破，可是实际情况是这个根目录直接访问是404。
+
+这款工具的目的就是将让我们从自动化中跳出来，因为我认为自动化应该做的是重复的机械工作而不是替代工作。
+
+## 流程图
+
+![未命名文件](https://github.com/RongSec/TryAnyPath/assets/96337516/1d1f3c0e-cbc2-4622-9816-8a70a7c11a6d)
 
 ## TODO
-缝合或者调用echole/httpx，对可访问的情况进行筛选
 
 添加规则判断，对含有info,username等敏感的目录进行筛选提取。
 
-图形化界面/等到功能完善了重构成java或者go。
+图形化界面/等到功能完善了重构成go。
 
-添加常见的未授权路径的遍历（但是量太大了，100多个path就会生成24000多个拼接path）
+对访问码200的根目录项进行swagger等api遍历。
+
+想添加异步访问和随机并发，防止被ban。
+
+在web请求结束后再添加一个逻辑，对500等异常馅响应单独重跑去把成功数据覆盖掉失败数据。
 
 ## 工具逻辑
-穷举式拼接所有path，来达成尽可能多的未授权访问，目前仅能实现已知path的提取和拼接。
 
 逻辑如下：
 
@@ -21,37 +31,54 @@
 
 对匹配到的1级目录是文件名的情况进行了删除，防止其被当作1级目录拼接给待测path。
 
-对wih获取的带有参数传递的情况可以进行着重显示。
+对wih获取的带有参数传递的情况可以进行分类显示。
 
 ## 使用场合
+
 借助WIH等工具提取出了网站url/path后
 
 ## 使用方法
+首先使用WIH
 
--f 指定txt文件
+./wih -t target.txt -r wih_rules.yml -f -a -c 4 -P 4 -J 
 
--z 指定zip文件
+<img width="884" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/6f901b9a-0dd7-4ec5-a35f-656e1d4dbc34">
 
-1. 安装依赖
-pip3 install pandas
-如果正常pip可以装的话就可以不用虚拟环境
+1. 创建一个python虚拟环境
+
 python3 -m venv myenv
-source myenv/bin/activate
-pip install pandas
-用完了就退出
-deactivate
 
-2. 参数设置
--f 指定txt文件
--z 指定zip文件
+source myenv/bin/activate
+
+2. 直接使用fuzz功能在处理完所有数据后会询问用户
+
+python3 FindAnyTHing.py -t target -o result/test.csv //target是存放WIH处理后的所有json文件的目录，result/test.csv是输出的文件，没有就会新建。
+
+<img width="1298" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/1ae917c4-784c-4dbd-b3d2-659319c78f53">
+
 
 ## 场景示例
 
 输出结果
 
-分别是：原数据，带有参数的源数据，提取的第一级目录，拼接后数据，带有参数的拼接后数据
+1. 选择了进行fuzz会在终端输出每一个的请求情况。
+这里只进行了简单的请求，下一步想添加异步访问和随机并发，防止被ban。
 
-<img width="873" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/43ceaf0d-115f-4b2f-b3ee-2d87ad24543d">
+<img width="1459" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/8df67e26-3f11-4c2e-9449-3d19122b70c6">
+
+访问结束后还会问你要不要继续请求
+<img width="1363" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/ed7b6e74-167a-4747-b703-b5657acd8687">
+你可以去看csv文件，如果你觉得线程太高了想要重新访问，可以直接重跑。
+
+这里设计的todo是在web请求结束后再添加一个逻辑，对500等异常馅响应单独重跑去把成功数据覆盖掉失败数据。
+<img width="356" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/0ebfa7a6-e700-4f6a-84f0-e52294687d3e">
+
+根据不同类型去筛选数据
+<img width="432" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/d2c9d61e-63ef-479a-a36b-35f40fb8f728">
+
+最终的数据如下
+<img width="1303" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/368a848d-1ffd-49e2-83be-b5e0ddbaa14a">
+
 
 有效性验证
 
