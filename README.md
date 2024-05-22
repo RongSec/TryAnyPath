@@ -74,13 +74,15 @@ python3 FindAnyTHing.py -t target -o result/test.csv //target是存放WIH处理�
 <img width="356" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/0ebfa7a6-e700-4f6a-84f0-e52294687d3e">
 
 根据不同类型去筛选数据
+
 <img width="432" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/d2c9d61e-63ef-479a-a36b-35f40fb8f728">
 
 最终的数据如下
+
 <img width="1303" alt="image" src="https://github.com/RongSec/TryAnyPath/assets/96337516/368a848d-1ffd-49e2-83be-b5e0ddbaa14a">
 
 
-有效性验证
+## 有效性验证
 
 通过遍历拼接访问到了未授权的下载接口
 
